@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {ConfigModule, ConfigService} from '@nestjs/config';
-import { join } from 'path';
 
 import { UserModule } from "./apps/user/user.module";
-import { User } from "./apps/user/user.model";
 import { AuthModule } from "./apps/auth/auth.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { typeOrmConfig } from "../typeOrm.config";
+import { CarModule } from "./apps/car/car.module";
+import { RentalModule } from "./apps/rental/rental.module";
 
 @Module({
   imports: [
@@ -17,20 +18,12 @@ import { AppService } from "./app.service";
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USERNAME'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
-        entities: [User],
-        synchronize: false,
-        migrations: [join(__dirname, 'migration', '*.ts')],
-      }),
+      useFactory: () => typeOrmConfig,
     }),
     UserModule,
     AuthModule,
+    CarModule,
+    RentalModule
   ],
   controllers: [AppController],
   providers: [AppService]

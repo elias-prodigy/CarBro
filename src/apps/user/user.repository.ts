@@ -17,20 +17,27 @@ export class UserRepository {
         private userRepository: Repository<User>,
     ) {}
 
-    async findAll(): Promise<User[]> {
-        return this.userRepository.find();
+    async findAll(options?: findUserOptions): Promise<User[]> {
+        return this.userRepository.find({ where: options });
     }
 
-    async findOneBy(options: findUserOptions): Promise<User> {
-        return this.userRepository.findOneBy(options);
+    async findOne(options: findUserOptions): Promise<User> {
+        return this.userRepository.findOne({
+            where: options,
+            relations: ['rentals']
+        });
     }
 
     async create(user: Partial<User>): Promise<User> {
         const newUser = this.userRepository.create(user);
-        return this.userRepository.save(newUser);
+        return this.save(newUser);
     }
 
-    async delete(id: number): Promise<void> {
+    async save(user: User): Promise<User> {
+        return this.userRepository.save(user);
+    }
+
+    async delete(id: string): Promise<void> {
         await this.userRepository.softDelete(id);
     }
 }

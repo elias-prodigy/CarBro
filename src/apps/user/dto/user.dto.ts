@@ -1,9 +1,9 @@
-import {IsDate, IsEnum, IsInt, IsNotEmpty, IsString} from 'class-validator';
+import {IsDate, IsEnum, IsNotEmpty, IsString, IsUUID} from 'class-validator';
 import {Role} from "../../auth/roles/roles.enum";
 
 export class UserDto {
-    @IsInt()
-    id: number;
+    @IsUUID()
+    id: string;
 
     @IsString()
     firstname: string;

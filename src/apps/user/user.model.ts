@@ -1,5 +1,15 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    ManyToMany, JoinTable, OneToMany
+} from 'typeorm';
 import { Role } from "../auth/roles/roles.enum";
+import {Car} from "../car/car.model";
+import {Rental} from "../rental/rental.model";
 
 @Entity()
 export class User {
@@ -24,6 +34,9 @@ export class User {
         default: Role.User,
     })
     role: Role;
+
+    @OneToMany(() => Rental, rental => rental.car)
+    rentals: Rental[];
 
     @CreateDateColumn({ nullable: false })
     createdAt: Date;
