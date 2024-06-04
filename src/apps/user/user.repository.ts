@@ -2,13 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.model';
-import { Role } from "../auth/roles/roles.enum";
-
-export interface findUserOptions {
-    id?: string,
-    role?: Role,
-    email?: string
-}
+import {FindUserOptions} from "./dto/user.find.options.dto";
 
 @Injectable()
 export class UserRepository {
@@ -17,7 +11,7 @@ export class UserRepository {
         private userRepository: Repository<User>,
     ) {}
 
-    async findAll(options?: findUserOptions): Promise<User[]> {
+    async findAll(options?: FindUserOptions): Promise<User[]> {
         try {
             return this.userRepository.find({where: options});
         } catch (e) {
@@ -25,7 +19,7 @@ export class UserRepository {
         }
     }
 
-    async findOne(options: findUserOptions): Promise<User> {
+    async findOne(options: FindUserOptions): Promise<User> {
         try {
             return this.userRepository.findOne({
                 where: options,

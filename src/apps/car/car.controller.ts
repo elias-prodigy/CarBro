@@ -34,14 +34,14 @@ export class CarController {
     @Roles(Role.Admin, Role.User)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get('available')
-    async findAllAvailable() {
+    async findAllAvailable(): Promise<Car[]> {
         return this.carService.findAll({isRented: false});
     }
 
     @Roles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Get('rented')
-    async findAllRented() {
+    async findAllRented(): Promise<Car[]> {
         return this.carService.findAll({isRented: true});
     }
 

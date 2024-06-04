@@ -2,16 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {Rental} from "./rental.model";
-import {User} from "../user/user.model";
-import {Car} from "../car/car.model";
-
-export interface findRentalOptions {
-    id?: string,
-    user?: User,
-    car?: Car,
-    startDate?: Date,
-    endDate?: Date
-}
+import {RentalFindOptionsDto} from "./dto/rental.find.options.dto";
 
 @Injectable()
 export class RentalRepository {
@@ -20,14 +11,7 @@ export class RentalRepository {
         private rentalRepository: Repository<Rental>,
     ) {}
 
-    async findAll(options?: findRentalOptions): Promise<Rental[]> {
-        return this.rentalRepository.find({
-            where: options,
-            relations: ['user', 'car']
-        });
-    }
-
-    async findOne(options: findRentalOptions): Promise<Rental> {
+    async findOne(options: RentalFindOptionsDto): Promise<Rental> {
         try {
             return this.rentalRepository.findOne({
                 where: options,

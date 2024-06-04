@@ -30,7 +30,7 @@ export class CarService {
         });
     }
 
-    async updateRentedStatus(id: string, status: boolean) {
+    async updateRentedStatus(id: string, status: boolean): Promise<void> {
         await this.carRepository.updateById(id, {isRented: status});
     }
 

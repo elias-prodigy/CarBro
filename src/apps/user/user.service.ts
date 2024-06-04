@@ -1,21 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
-import { findUserOptions, UserRepository } from './user.repository';
+import { UserRepository } from './user.repository';
 import { User } from './user.model';
 import { UserCreateDto } from "./dto/user.create.dto";
 import { Role } from "../auth/roles/roles.enum";
 import * as bcrypt from "bcrypt";
+import {FindUserOptions} from "./dto/user.find.options.dto";
 
 @Injectable()
 export class UserService {
     constructor(private userRepository: UserRepository) {}
 
-    async findAll(options?: findUserOptions): Promise<User[]> {
+    async findAll(options?: FindUserOptions): Promise<User[]> {
         return this.userRepository.findAll(options);
     }
 
-    async findOne(options: findUserOptions): Promise<User> {
+    async findOne(options: FindUserOptions): Promise<User> {
         return this.userRepository.findOne(options);
     }
 
