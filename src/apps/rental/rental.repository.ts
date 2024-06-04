@@ -13,7 +13,7 @@ export class RentalRepository {
 
   async findOne(options: RentalFindOptionsDto): Promise<Rental> {
     try {
-      return this.rentalRepository.findOne({
+      return await this.rentalRepository.findOne({
         where: options,
         relations: ['user', 'car'],
       });
@@ -25,7 +25,7 @@ export class RentalRepository {
   async create(rental: Partial<Rental>): Promise<Rental> {
     try {
       const newRental = this.rentalRepository.create(rental);
-      return this.save(newRental);
+      return await this.save(newRental);
     } catch (e) {
       throw new Error(`Failed to create rental: ${e}`);
     }
@@ -34,7 +34,7 @@ export class RentalRepository {
   async setEndDate(id: string, endDate: Date): Promise<Rental> {
     try {
       await this.rentalRepository.update({ id }, { endDate });
-      return this.findOne({ id });
+      return await this.findOne({ id });
     } catch (e) {
       throw new Error(`Failed to rental end date: ${e}`);
     }
@@ -42,7 +42,7 @@ export class RentalRepository {
 
   async save(rental: Rental): Promise<Rental> {
     try {
-      return this.rentalRepository.save(rental);
+      return await this.rentalRepository.save(rental);
     } catch (e) {
       throw new Error(`Failed to save rental: ${e}`);
     }

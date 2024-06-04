@@ -11,29 +11,35 @@ export class CarRepository {
     private carRepository: Repository<Car>,
   ) {}
 
-    private applyConditions(queryBuilder: SelectQueryBuilder<Car>, options?: CarFindOptionsDto): SelectQueryBuilder<Car> {
-        if (options) {
-            Object.keys(options).forEach(key => {
-                const value = options[key];
-                if (value !== undefined) {
-                    if (key === 'search') {
-                        queryBuilder.andWhere(`LOWER(car.brand) ILIKE LOWER(:search) OR LOWER(car.model) ILIKE LOWER(:search)`, { search: `%${value}%` });
-                    } else if (typeof value === 'string') {
-                        queryBuilder.andWhere(`LOWER(car.${key}) ILIKE LOWER(:${key})`, { [key]: `%${value}%` });
-                    } else {
-                        queryBuilder.andWhere(`car.${key} = :${key}`, { [key]: value });
-                    }
-                }
+  private getQuery(options?: CarFindOptionsDto): SelectQueryBuilder<Car> {
+    const queryBuilder = this.carRepository.createQueryBuilder('car');
+
+    if (options) {
+      Object.keys(options).forEach((key) => {
+        const value = options[key];
+        if (value !== undefined) {
+          if (key === 'search') {
+            queryBuilder.andWhere(
+              `LOWER(car.brand) ILIKE LOWER(:search) OR LOWER(car.model) ILIKE LOWER(:search)`,
+              { search: `%${value}%` },
+            );
+          } else if (typeof value === 'string') {
+            queryBuilder.andWhere(`LOWER(car.${key}) ILIKE LOWER(:${key})`, {
+              [key]: `%${value}%`,
             });
+          } else {
+            queryBuilder.andWhere(`car.${key} = :${key}`, { [key]: value });
+          }
         }
-        return queryBuilder;
+      });
     }
+    return queryBuilder;
+  }
 
   async findAll(options?: CarFindOptionsDto): Promise<Car[]> {
     try {
-      const queryBuilder = this.carRepository.createQueryBuilder('car');
-      this.applyConditions(queryBuilder, options);
-      return queryBuilder.getMany();
+      const queryBuilder = this.getQuery(options);
+      return await queryBuilder.getMany();
     } catch (e) {
       throw new Error(`Failed to find all cars: ${e}`);
     }
@@ -41,7 +47,7 @@ export class CarRepository {
 
   async findOne(options: CarFindOptionsDto): Promise<Car> {
     try {
-      return this.carRepository.findOne({ where: options });
+      return await this.carRepository.findOne({ where: options });
     } catch (e) {
       throw new Error(`Failed to find car: ${e}`);
     }
@@ -50,7 +56,7 @@ export class CarRepository {
   async create(car: Partial<Car>): Promise<Car> {
     try {
       const newCar = this.carRepository.create(car);
-      return this.save(newCar);
+      return await this.save(newCar);
     } catch (e) {
       throw new Error(`Failed to create car: ${e}`);
     }
@@ -66,7 +72,7 @@ export class CarRepository {
 
   async save(car: Car): Promise<Car> {
     try {
-      return this.carRepository.save(car);
+      return await this.carRepository.save(car);
     } catch (e) {
       throw new Error(`Failed to save car: ${e}`);
     }
@@ -82,7 +88,7 @@ export class CarRepository {
 
   async findByLocation({ latitude, longitude, radius = 5000 }): Promise<Car[]> {
     try {
-      return this.carRepository
+      return await this.carRepository
         .createQueryBuilder('car')
         .where(
           `ST_DWithin(

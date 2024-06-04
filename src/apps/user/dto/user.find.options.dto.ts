@@ -1,5 +1,5 @@
 import { Role } from '../../auth/roles/roles.enum';
-import { IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsUUID } from 'class-validator';
 
 export class FindUserOptions {
   @IsUUID()
@@ -11,5 +11,6 @@ export class FindUserOptions {
   role?: Role;
 
   @IsOptional()
+  @IsEmail()
   email?: string;
 }

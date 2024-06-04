@@ -1,73 +1,99 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# CarBro
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This is a RESTful API for a car rental service that allows users to register, book cars, and manage car rentals. The service includes functionalities for both regular users and administrators. Authentication is handled using JWT tokens.
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. **User Registration**: Users can register to create an account.
+2. **Admin Creation**: Superadmin can create admin accounts. The superadmin exists as a singleton.
+3. **Car Management**: Admins can create and delete car records.
+4. **Car Rental**: Registered users can rent a car. Users can only rent one car at a time.
+5. **Rental Status Viewing (Admin)**: Admins can view which cars are currently rented.
+6. **Available Cars Viewing**: Users and admins can view cars that are available for rental.
+7. **Car Filtering**: Users can filter available cars by various fields (e.g., brand, model, year).
+8. **Quick Search**: Users can quickly search for cars by brand or model name.
+9. **User Management (Admin)**: Admins can view all users.
+10. **Soft Deletion of Users**: Admins can soft delete user accounts.
+11. **Geolocation**: *(Optional)* Add geolocation to cars, allowing "real-time" (without websocket implementation) updates and searches based on location and radius.
 
-## Installation
+## Requirements
 
-```bash
-$ npm install
-```
+- **Authentication**: JWT tokens are used for authentication.
+- **Role-Based Access**: Different endpoints and actions are available depending on the user's role (e.g., admin, user, superadmin).
 
-## Running the app
+### Auth
 
-```bash
-# development
-$ npm run start
+- `POST /auth/register`: Register a new user.
+- `POST /auth/login`: Login and receive a JWT token.
 
-# watch mode
-$ npm run start:dev
+### Car
 
-# production mode
-$ npm run start:prod
-```
+- `POST /car`: Create a new car record (admin).
+- `DELETE /car/:id`: Delete a car record (admin).
+- `GET /car`: Filter and search all cars by various fields (admin).
+- `GET /car/:id`: Get car by id (user and admin).
+- `GET /car/available`: View all available cars for rental (user).
+- `PATCH /car/:id/location`: Update the geolocation of a car (user and admin).
+- `GET /location`: Search cars based on geolocation and radius (user and admin).
 
-## Test
+### Rental
 
-```bash
-# unit tests
-$ npm run test
+- `POST /rent`: Rent a car (user and admin).
+- `Patch /:rentalId/return`: Return a car (user and admin).
 
-# e2e tests
-$ npm run test:e2e
+### User
 
-# test coverage
-$ npm run test:cov
-```
+- `GET /user`: View all users (admin only).
+- `GET /user/:id`: Get one user by id (admin only).
+- `DELETE /users/:id`: Soft delete a user (admin only).
+- `POST /user/admin/create`: Create admin user (superAdmin only).
 
-## Support
+## Getting Started
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Prerequisites
 
-## Stay in touch
+- Node.js
+- PostgreSQL
+- TypeORM
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Installation
 
-## License
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/elias-prodigy/CarBro.git
 
-Nest is [MIT licensed](LICENSE).
+2. Install dependencies:
+   ```sh
+   npm install
+   
+3. Create new database.
+
+4. Set up environment variables from .env.skeleton
+5. Run migrations
+   ```sh
+   npm run typeorm:run-migrations
+   
+6. Install PostGIS by running following command
+   ```sh
+   sudo apt install postgis
+
+7. Add PostGIS extension to your database
+   ```sh
+   sudo -u postgres psql
+   \c 'your-db-name'
+   CREATE EXTENSION postgis ;
+6. Run application
+   ```sh
+   npm run start
+
+### Tests
+
+   To run tests
+   ```sh
+   npm run test
+   ```
+Since testing wasn't a prio - there are only few tests available for Auth module to save development time, but show an example how it should look like.
+At the moment application doesn't support a separate database for testing purposes.
+Obviously it should be implemented as well as seeding the database.

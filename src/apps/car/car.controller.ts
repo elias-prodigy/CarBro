@@ -20,14 +20,19 @@ import { Car } from './car.model';
 import { CarFindOptionsDto } from './dto/car.find.options.dto';
 import { CarUpdateLocationDto } from './dto/car.update.location.dto';
 import { CarSearchByLocationDto } from './dto/car.search.by.location.dto';
-import { User } from '../user/decorator/user.decorator';
-import { UserDto } from '../user/dto/user.dto';
 
 @Controller('car')
 export class CarController {
   constructor(private readonly carService: CarService) {}
 
   @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('location')
+  async findByLocation(@Query() data: CarSearchByLocationDto) {
+    return this.carService.findByLocation(data);
+  }
+
+  @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAll(@Query() filters: CarFindOptionsDto): Promise<Car[]> {
@@ -41,18 +46,11 @@ export class CarController {
     return this.carService.findOne({ id });
   }
 
-  @Roles(Role.Admin, Role.User)
+  @Roles(Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('available')
-  async findAllAvailable(): Promise<Car[]> {
-    return this.carService.findAll({ isRented: false });
-  }
-
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('rented')
-  async findAllRented(): Promise<Car[]> {
-    return this.carService.findAll({ isRented: true });
+  async findAllAvailable(@Query() filters: CarFindOptionsDto): Promise<Car[]> {
+    return this.carService.findAll({ ...filters, isRented: false });
   }
 
   @Roles(Role.Admin)
@@ -65,10 +63,7 @@ export class CarController {
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string, @User() user: UserDto) {
-    if (user.id === id) {
-      throw new Error(`User can't self delete`);
-    }
+  async delete(@Param('id') id: string) {
     return this.carService.delete(id);
   }
 
@@ -80,12 +75,5 @@ export class CarController {
     @Body() body: CarUpdateLocationDto,
   ) {
     return this.carService.updateLocation(id, body);
-  }
-
-  @Roles(Role.Admin, Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('location')
-  async findByLocation(@Query() data: CarSearchByLocationDto) {
-    return this.carService.findByLocation(data);
   }
 }

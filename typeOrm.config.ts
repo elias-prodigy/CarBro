@@ -5,7 +5,10 @@ import { config } from 'dotenv';
 import { User } from './src/apps/user/user.model';
 import { Car } from "./src/apps/car/car.model";
 import { Rental } from "./src/apps/rental/rental.model";
-import { CreateSuperAdminUser1685647891234 } from './src/migration/1717325975367-CreateSuperAdmin';
+import {
+  InitialMigration1717324857327
+} from "./src/migration/1717324857327-InitialMigration";
+import { CreateSuperAdminUser1717325975367 } from './src/migration/1717325975367-CreateSuperAdmin';
 import { PopulateCars1717515391671 } from './src/migration/1717515391671-PopulateCars';
 
 config();
@@ -20,9 +23,10 @@ export const typeOrmConfig: DataSourceOptions = {
   password: configService.get<string>('DATABASE_PASSWORD'),
   database: configService.get<string>('DATABASE_NAME'),
   entities: [User, Car, Rental],
-  synchronize: false,
+  synchronize: true,
   migrations: [
-    CreateSuperAdminUser1685647891234,
+    InitialMigration1717324857327,
+    CreateSuperAdminUser1717325975367,
     PopulateCars1717515391671
   ],
 };

@@ -1,4 +1,11 @@
-import { Controller, Post, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Param,
+  UseGuards,
+  Body,
+  Patch,
+} from '@nestjs/common';
 
 import { RentalService } from './rental.service';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -15,18 +22,18 @@ export class RentalController {
 
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post(':carId/rent')
+  @Post('rent')
   async rent(
-    @Param('carId') carId: string,
+    @Body() body: { carId: string },
     @User() user: UserDto,
   ): Promise<Rental> {
-    return this.rentalService.rentCar(user, carId);
+    return this.rentalService.rent(user, body.carId);
   }
 
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post(':rentalId/return')
+  @Patch(':rentalId/return')
   async return(@Param('rentalId') rentalId: string): Promise<Rental> {
-    return this.rentalService.returnCar(rentalId);
+    return this.rentalService.return(rentalId);
   }
 }

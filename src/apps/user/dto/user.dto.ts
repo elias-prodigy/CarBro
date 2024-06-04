@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsDate,
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsString,
@@ -20,6 +21,7 @@ export class UserDto {
   lastname: string;
 
   @IsString()
+  @IsEmail()
   @IsNotEmpty()
   email: string;
 

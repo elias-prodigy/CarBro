@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 import { UserRepository } from './user.repository';
 import { User } from './user.model';
@@ -24,7 +23,6 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     return this.userRepository.create({
       ...createUserDto,
-      id: uuidv4(),
       password: hashedPassword,
       role,
     });

@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { typeOrmConfig } from '../typeOrm.config';
 import { CarModule } from './apps/car/car.module';
 import { RentalModule } from './apps/rental/rental.module';
+import { AppExceptionFilter } from './utils/app.exception.filter';
 
 @Module({
   imports: [
@@ -25,5 +26,11 @@ import { RentalModule } from './apps/rental/rental.module';
     RentalModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: 'APP_FILTER',
+      useClass: AppExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

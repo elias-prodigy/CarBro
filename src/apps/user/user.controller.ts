@@ -17,6 +17,8 @@ import { Role } from '../auth/roles/roles.enum';
 import { UserCreateDto } from './dto/user.create.dto';
 import { FindUserOptions } from './dto/user.find.options.dto';
 import { User } from './user.model';
+import { User as UserDecorator } from '../user/decorator/user.decorator';
+import { UserDto } from './dto/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -39,7 +41,13 @@ export class UserController {
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
+  remove(
+    @Param('id') id: string,
+    @UserDecorator() user: UserDto,
+  ): Promise<void> {
+    if (user.id === id) {
+      throw new Error(`User can't self delete`);
+    }
     return this.userService.remove(id);
   }
 

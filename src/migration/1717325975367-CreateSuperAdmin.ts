@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-export class CreateSuperAdminUser1685647891234 implements MigrationInterface {
+export class CreateSuperAdminUser1717325975367 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const password = await bcrypt.hash(process.env.SUPERADMIN_PASSWORD, 10);
     await queryRunner.query(`

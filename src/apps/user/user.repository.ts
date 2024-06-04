@@ -13,7 +13,7 @@ export class UserRepository {
 
   async findAll(options?: FindUserOptions): Promise<User[]> {
     try {
-      return this.userRepository.find({ where: options });
+      return await this.userRepository.find({ where: options });
     } catch (e) {
       throw new Error(`Failed to find all users: ${e}`);
     }
@@ -21,7 +21,7 @@ export class UserRepository {
 
   async findOne(options: FindUserOptions): Promise<User> {
     try {
-      return this.userRepository.findOne({
+      return await this.userRepository.findOne({
         where: options,
         relations: ['rentals'],
       });
@@ -33,7 +33,7 @@ export class UserRepository {
   async create(user: Partial<User>): Promise<User> {
     try {
       const newUser = this.userRepository.create(user);
-      return this.save(newUser);
+      return await this.save(newUser);
     } catch (e) {
       throw new Error(`Failed to create user: ${e}`);
     }
@@ -41,7 +41,7 @@ export class UserRepository {
 
   async save(user: User): Promise<User> {
     try {
-      return this.userRepository.save(user);
+      return await this.userRepository.save(user);
     } catch (e) {
       throw new Error(`Failed to save user: ${e}`);
     }

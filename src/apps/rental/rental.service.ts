@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 import { RentalRepository } from './rental.repository';
 import { Rental } from './rental.model';
@@ -13,7 +12,7 @@ export class RentalService {
     private carService: CarService,
   ) {}
 
-  async rentCar(user: UserDto, carId: string): Promise<Rental> {
+  async rent(user: UserDto, carId: string): Promise<Rental> {
     const activeRental = await this.rentalRepository.userRentalStatus(user.id);
     if (activeRental) throw new Error('User is already renting a car');
 
@@ -22,7 +21,6 @@ export class RentalService {
     if (car.isRented) throw new Error('Car is already rented');
 
     const rental = this.rentalRepository.create({
-      id: uuidv4(),
       user,
       car,
       startDate: new Date(),
@@ -33,7 +31,7 @@ export class RentalService {
     return rental;
   }
 
-  async returnCar(rentalId: string): Promise<Rental> {
+  async return(rentalId: string): Promise<Rental> {
     const rental = await this.rentalRepository.findOne({ id: rentalId });
     if (!rental) throw new Error('Rental not found');
     if (rental.endDate) throw new Error('Car is already returned');

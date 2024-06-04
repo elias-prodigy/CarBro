@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 import { CarRepository } from './car.repository';
 import { Car } from './car.model';
@@ -23,7 +22,6 @@ export class CarService {
   async create(createCarDto: CarCreateDto): Promise<Car> {
     return this.carRepository.create({
       ...createCarDto,
-      id: uuidv4(),
       isRented: false,
     });
   }
@@ -38,8 +36,13 @@ export class CarService {
 
   async updateLocation(id: string, data: CarUpdateLocationDto): Promise<Car> {
     const { latitude, longitude } = data;
-    await this.carRepository.updateById(id, { latitude, longitude });
-    return this.carRepository.findOne({ id });
+    const car = await this.carRepository.findOne({ id });
+    if (!car) {
+      throw new Error('Car does not exist');
+    }
+    car.longitude = longitude;
+    car.latitude = latitude;
+    return this.carRepository.save(car);
   }
 
   async findByLocation(data: CarSearchByLocationDto): Promise<Car[]> {
