@@ -18,26 +18,46 @@ export class UserRepository {
     ) {}
 
     async findAll(options?: findUserOptions): Promise<User[]> {
-        return this.userRepository.find({ where: options });
+        try {
+            return this.userRepository.find({where: options});
+        } catch (e) {
+            throw new Error(`Failed to find all users: ${e}`);
+        }
     }
 
     async findOne(options: findUserOptions): Promise<User> {
-        return this.userRepository.findOne({
-            where: options,
-            relations: ['rentals']
-        });
+        try {
+            return this.userRepository.findOne({
+                where: options,
+                relations: ['rentals']
+            });
+        } catch (e) {
+            throw new Error(`Failed to find user: ${e}`);
+        }
     }
 
     async create(user: Partial<User>): Promise<User> {
-        const newUser = this.userRepository.create(user);
-        return this.save(newUser);
+        try {
+            const newUser = this.userRepository.create(user);
+            return this.save(newUser);
+        } catch (e) {
+            throw new Error(`Failed to create user: ${e}`);
+        }
     }
 
     async save(user: User): Promise<User> {
-        return this.userRepository.save(user);
+        try {
+            return this.userRepository.save(user);
+        } catch (e) {
+            throw new Error(`Failed to save user: ${e}`);
+        }
     }
 
     async delete(id: string): Promise<void> {
-        await this.userRepository.softDelete(id);
+        try {
+            await this.userRepository.softDelete(id);
+        } catch (e) {
+            throw new Error(`Failed to delete user: ${e}`);
+        }
     }
 }

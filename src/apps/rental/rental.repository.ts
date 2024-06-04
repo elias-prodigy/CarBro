@@ -28,32 +28,52 @@ export class RentalRepository {
     }
 
     async findOne(options: findRentalOptions): Promise<Rental> {
-        return this.rentalRepository.findOne({
-            where: options,
-            relations: ['user', 'car']
-        });
+        try {
+            return this.rentalRepository.findOne({
+                where: options,
+                relations: ['user', 'car']
+            });
+        } catch (e) {
+            throw new Error(`Failed to find rental: ${e}`);
+        }
     }
 
     async create(rental: Partial<Rental>): Promise<Rental> {
-        const newRental = this.rentalRepository.create(rental);
-        return this.save(newRental);
+        try {
+            const newRental = this.rentalRepository.create(rental);
+            return this.save(newRental);
+        } catch (e) {
+            throw new Error(`Failed to create rental: ${e}`);
+        }
     }
 
     async setEndDate(id: string, endDate: Date): Promise<Rental> {
-        await this.rentalRepository.update({id}, {endDate});
-        return this.findOne({id});
+        try {
+            await this.rentalRepository.update({id}, {endDate});
+            return this.findOne({id});
+        } catch (e) {
+            throw new Error(`Failed to rental end date: ${e}`);
+        }
     }
 
     async save(rental: Rental): Promise<Rental> {
-        return this.rentalRepository.save(rental);
+        try {
+            return this.rentalRepository.save(rental);
+        } catch (e) {
+            throw new Error(`Failed to save rental: ${e}`);
+        }
     }
 
     async userRentalStatus(userId: string): Promise<boolean> {
-        const userWithActiveRental = await this.rentalRepository.createQueryBuilder('rental')
-            .leftJoinAndSelect('rental.user', 'users')
-            .where('users.id = :userId', { userId })
-            .andWhere('rental.endDate IS NULL')
-            .getOne();
-        return !!userWithActiveRental;
+        try {
+            const userWithActiveRental = await this.rentalRepository.createQueryBuilder('rental')
+                .leftJoinAndSelect('rental.user', 'users')
+                .where('users.id = :userId', {userId})
+                .andWhere('rental.endDate IS NULL')
+                .getOne();
+            return !!userWithActiveRental;
+        } catch (e) {
+            throw new Error(`Failed get user rentals: ${e}`);
+        }
     }
 }

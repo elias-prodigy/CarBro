@@ -4,20 +4,16 @@ import { v4 as uuidv4 } from 'uuid';
 import {RentalRepository} from './rental.repository';
 import {Rental} from "./rental.model";
 import {CarService} from "../car/car.service";
-import {UserService} from "../user/user.service";
+import {UserDto} from "../user/dto/user.dto";
 
 @Injectable()
 export class RentalService {
     constructor(
         private rentalRepository: RentalRepository,
         private carService: CarService,
-        private userService: UserService,
     ) {}
 
-    async rentCar(userId: string, carId: string): Promise<Rental> {
-        const user = await this.userService.findOne({id: userId});
-        if (!user) throw new Error('User not found');
-
+    async rentCar(user: UserDto, carId: string): Promise<Rental> {
         const activeRental = await this.rentalRepository.userRentalStatus(user.id);
         if (activeRental) throw new Error('User is already renting a car');
 
@@ -27,8 +23,8 @@ export class RentalService {
 
         const rental = this.rentalRepository.create({
             id: uuidv4(),
-            user: user,
-            car: car,
+            user,
+            car,
             startDate: new Date()
         });
 

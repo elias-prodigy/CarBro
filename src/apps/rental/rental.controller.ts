@@ -16,7 +16,7 @@ export class RentalController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post(':carId/rent')
     async rent(@Param('carId') carId: string, @User() user: UserDto) {
-        return this.rentalService.rentCar(user.id, carId);
+        return this.rentalService.rentCar(user, carId);
     }
 
     @Roles(Role.Admin, Role.User)

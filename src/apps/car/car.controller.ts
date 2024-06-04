@@ -10,6 +10,8 @@ import {Car} from "./car.model";
 import {CarFindOptionsDto} from "./dto/car.find.options.dto";
 import {CarUpdateLocationDto} from "./dto/car.update.location.dto";
 import {CarSearchByLocationDto} from "./dto/car.search.by.location.dto";
+import {User} from "../user/decorator/user.decorator";
+import {UserDto} from "../user/dto/user.dto";
 
 @Controller('car')
 export class CarController {
@@ -53,7 +55,10 @@ export class CarController {
     @Roles(Role.Admin)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(':id')
-    async delete(@Param('id') id: string) {
+    async delete(@Param('id') id: string, @User() user: UserDto) {
+        if (user.id === id) {
+            throw new Error(`User can't self delete`);
+        }
         return this.carService.delete(id);
     }
 

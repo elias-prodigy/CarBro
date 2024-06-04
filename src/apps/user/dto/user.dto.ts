@@ -1,5 +1,6 @@
-import {IsDate, IsEnum, IsNotEmpty, IsString, IsUUID} from 'class-validator';
+import {IsArray, IsDate, IsEnum, IsNotEmpty, IsString, IsUUID} from 'class-validator';
 import {Role} from "../../auth/roles/roles.enum";
+import {Rental} from "../../rental/rental.model";
 
 export class UserDto {
     @IsUUID()
@@ -19,6 +20,9 @@ export class UserDto {
 
     @IsEnum(Role)
     role: Role;
+
+    @IsArray()
+    rentals: Rental[];
 
     @IsDate()
     createdAt: Date;

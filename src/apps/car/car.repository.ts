@@ -4,7 +4,6 @@ import {Repository, SelectQueryBuilder} from 'typeorm';
 import { Car } from './car.model';
 import {CarFindOptionsDto} from "./dto/car.find.options.dto";
 
-
 @Injectable()
 export class CarRepository {
     constructor(
@@ -31,41 +30,68 @@ export class CarRepository {
     }
 
     async findAll(options?: CarFindOptionsDto): Promise<Car[]> {
-        const queryBuilder = this.carRepository.createQueryBuilder('car');
-        this.applyConditions(queryBuilder, options);
-        return queryBuilder.getMany();
+        try {
+            const queryBuilder = this.carRepository.createQueryBuilder('car');
+            this.applyConditions(queryBuilder, options);
+            return queryBuilder.getMany();
+        } catch (e) {
+            throw new Error(`Failed to find all cars: ${e}`);
+        }
     }
 
     async findOne(options: CarFindOptionsDto): Promise<Car> {
-        return this.carRepository.findOne({where: options});
+        try {
+            return this.carRepository.findOne({ where: options });
+        } catch (e) {
+            throw new Error(`Failed to find car: ${e}`);
+        }
     }
 
     async create(car: Partial<Car>): Promise<Car> {
-        const newCar = this.carRepository.create(car);
-        return this.save(newCar);
+        try {
+            const newCar = this.carRepository.create(car);
+            return this.save(newCar);
+        } catch (e) {
+            throw new Error(`Failed to create car: ${e}`);
+        }
     }
 
     async updateById(id: string, updates: Partial<Car>): Promise<void> {
-        await this.carRepository.update({id}, updates);
+        try {
+            await this.carRepository.update({ id }, updates);
+        } catch (e) {
+            throw new Error(`Failed to update car location: ${e}`);
+        }
     }
 
-
     async save(car: Car): Promise<Car> {
-        return this.carRepository.save(car);
+        try {
+            return this.carRepository.save(car);
+        } catch (e) {
+            throw new Error(`Failed to save car: ${e}`);
+        }
     }
 
     async delete(id: string): Promise<void> {
-        await this.carRepository.softDelete(id);
+        try {
+            await this.carRepository.softDelete(id);
+        } catch (e) {
+            throw new Error(`Failed to delete car: ${e}`);
+        }
     }
 
     async findByLocation({ latitude, longitude, radius = 5000 }): Promise<Car[]> {
-        return this.carRepository
-            .createQueryBuilder('car')
-            .where(`ST_DWithin(
-                ST_SetSRID(ST_Point(car.longitude, car.latitude), 4326)::geography,
-                ST_SetSRID(ST_Point(:longitude, :latitude), 4326)::geography,
-                :radius
-            )`, { latitude, longitude, radius })
-            .getMany();
+        try {
+            return this.carRepository
+                .createQueryBuilder('car')
+                .where(`ST_DWithin(
+                    ST_SetSRID(ST_Point(car.longitude, car.latitude), 4326)::geography,
+                    ST_SetSRID(ST_Point(:longitude, :latitude), 4326)::geography,
+                    :radius
+                )`, { latitude, longitude, radius })
+                .getMany();
+        } catch (e) {
+            new Error(`Failed to find cars by location: ${e}`);
+        }
     }
 }
