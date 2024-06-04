@@ -36,18 +36,18 @@ This is a RESTful API for a car rental service that allows users to register, bo
 - `GET /car/:id`: Get car by id (user and admin).
 - `GET /car/available`: View all available cars for rental (user).
 - `PATCH /car/:id/location`: Update the geolocation of a car (user and admin).
-- `GET /location`: Search cars based on geolocation and radius (user and admin).
+- `GET /car/location`: Search cars based on geolocation and radius (user and admin).
 
 ### Rental
 
-- `POST /rent`: Rent a car (user and admin).
-- `Patch /:rentalId/return`: Return a car (user and admin).
+- `POST /rental/rent`: Rent a car (user and admin).
+- `Patch /rental/:rentalId/return`: Return a car (user and admin).
 
 ### User
 
 - `GET /user`: View all users (admin only).
 - `GET /user/:id`: Get one user by id (admin only).
-- `DELETE /users/:id`: Soft delete a user (admin only).
+- `DELETE /user/:id`: Soft delete a user (admin only).
 - `POST /user/admin/create`: Create admin user (superAdmin only).
 
 ## Getting Started
@@ -75,7 +75,7 @@ This is a RESTful API for a car rental service that allows users to register, bo
    ```sh
    npm run typeorm:run-migrations
    
-6. Install PostGIS by running following command
+6. Install PostGIS globally by running following command
    ```sh
    sudo apt install postgis
 
