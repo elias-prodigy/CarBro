@@ -18,7 +18,7 @@ export const typeOrmConfig: DataSourceOptions = {
   password: configService.get<string>('DATABASE_PASSWORD'),
   database: configService.get<string>('DATABASE_NAME'),
   entities: [User, Car, Rental],
-  synchronize: true,
+  synchronize: false,
   migrations: [CreateSuperAdminUser1685647891234],
 };
 
