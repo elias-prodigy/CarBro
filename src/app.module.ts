@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {ConfigModule, ConfigService} from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UserModule } from "./apps/user/user.module";
-import { AuthModule } from "./apps/auth/auth.module";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
-import { typeOrmConfig } from "../typeOrm.config";
-import { CarModule } from "./apps/car/car.module";
-import { RentalModule } from "./apps/rental/rental.module";
+import { UserModule } from './apps/user/user.module';
+import { AuthModule } from './apps/auth/auth.module';
+import { AppController } from './app.controller';
+import { typeOrmConfig } from '../typeOrm.config';
+import { CarModule } from './apps/car/car.module';
+import { RentalModule } from './apps/rental/rental.module';
 
 @Module({
   imports: [
@@ -23,9 +22,8 @@ import { RentalModule } from "./apps/rental/rental.module";
     UserModule,
     AuthModule,
     CarModule,
-    RentalModule
+    RentalModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
 })
 export class AppModule {}
